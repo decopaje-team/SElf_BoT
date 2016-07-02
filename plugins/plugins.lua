@@ -24,15 +24,15 @@ local function plugin_exists( name )
 end
 
 local function list_plugins(only_enabled)
-  local text = '💢 Plugins :\n'
+  local text = 'انجام شد ❤️\n'
   local psum = 0
-  for k, v in pairs( plugins_names( )) do    local status = '🚫'
+  for k, v in pairs( plugins_names( )) do    local status = '✖️'
     psum = psum+1
     pact = 0
     -- Check if is enabled
     for k2, v2 in pairs(_config.enabled_plugins) do
       if v == v2..'.lua' then
-        status = '⭕️'
+        status = '✔️'
       end
       pact = pact+1
     end
@@ -57,7 +57,7 @@ local function enable_plugin( plugin_name )
   print('checking if '..plugin_name..' exists')
   -- Check if plugin is enabled
   if plugin_enabled(plugin_name) then
-    return '💢 plugin '..plugin_name..' is enabled. '
+    return '🔃 پلاگین '..plugin_name..' فعال شد '
   end
   -- Checks if plugin exists
   if plugin_exists(plugin_name) then
@@ -68,19 +68,19 @@ local function enable_plugin( plugin_name )
     -- Reload the plugins
     return reload_plugins( )
   else
-    return '💢 plugins '..plugin_name..' does not exists.'
+    return '🔃 پلاگین '..plugin_name..' غیرفعال شد'
   end
 end
 
 local function disable_plugin( name, chat )
   -- Check if plugins exists
   if not plugin_exists(name) then
-    return '💢 plugins '..name..' does not exists.'
+    return '🔃 پلاگین '..name..' پاک شد'
   end
   local k = plugin_enabled(name)
   -- Check if plugin is enabled
   if not k then
-    return '💢 plugin '..name..' disabled on this gp.'
+    return '🔃 پلاگین '..name..' پاک شد'
   end
   -- Disable and reload
   table.remove(_config.enabled_plugins, k)
@@ -128,13 +128,13 @@ end
 local function run(msg, matches)
 	to_id = msg.to.id
   -- Show the available plugins
-  if permissions(msg.from.id, msg.to.id, "plugins") then
-    if matches[1] == '#plugins' then
+  if permissions(msg.from.id, msg.to.id, "پلاگین ها") then
+    if matches[1] == 'پلاگین ها' then
       return list_plugins()
     end
 
     -- Re-enable a plugin for this chat
-    if matches[1] == 'enable' and matches[3] == 'gp' then
+    if matches[1] == 'بشه' and matches[3] == 'gp' then
       local receiver = get_receiver(msg)
       local plugin = matches[2]
       print("enable "..plugin..' on this gp')
@@ -142,14 +142,14 @@ local function run(msg, matches)
     end
 
     -- Enable a plugin
-    if matches[1] == 'enable' then
+    if matches[1] == 'بشه' then
       local plugin_name = matches[2]
       print("enable: "..matches[2])
       return enable_plugin(plugin_name)
     end
 
     -- Disable a plugin on a chat
-    if matches[1] == 'disable' and matches[3] == 'gp' then
+    if matches[1] == 'پاک شه' and matches[3] == 'gp' then
       local plugin = matches[2]
       local receiver = get_receiver(msg)
       print("disable "..plugin..' on this gp')
@@ -157,13 +157,13 @@ local function run(msg, matches)
     end
 
     -- Disable a plugin
-    if matches[1] == 'disable' then
+    if matches[1] == 'پاک شه' then
       print("disable: "..matches[2])
       return disable_plugin(matches[2])
     end
 
     -- Reload all the plugins!
-    if matches[1] == 'reload' then
+    if matches[1] == '' then
       return reload_plugins(true)
     end
   else
@@ -173,12 +173,12 @@ end
 
 return {
   patterns = {
-    "^#plugins$",
-    "^#plugins? (enable) ([%w_%.%-]+)$",
-    "^#plugins? (disable) ([%w_%.%-]+)$",
+    "^پلاگین ها",
+    "^پلاگین? (بشه) ([%w_%.%-]+)$",
+    "^پلاگین ? (پاک شه) ([%w_%.%-]+)$",
     "^#plugins? (enable) ([%w_%.%-]+) (gp)",
     "^#plugins? (disable) ([%w_%.%-]+) (gp)",
-    "^#plugins? (reload)$" },
+    "^پلاگین ها? (ریلود)$" },
   run = run
 }
 
