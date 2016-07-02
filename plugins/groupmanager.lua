@@ -59,7 +59,7 @@ local function kick_by_username(cb_extra, success, result)
 end
 
 local function run(msg, matches)
-       if matches[1] == 'setname' then
+       if matches[1] == 'تغییر نام' then
         if permissions(msg.from.id, msg.to.id, "settings") then
             local hash = 'name:enabled:'..msg.to.id
             if not redis:get(hash) then
@@ -71,7 +71,7 @@ local function run(msg, matches)
             end
             return
         end
-    elseif matches[1] == 'newlink' then
+    elseif matches[1] == 'لینک جدید' then
         if permissions(msg.from.id, msg.to.id, "setlink") then
         	local receiver = get_receiver(msg)
             local hash = 'link:'..msg.to.id
@@ -90,16 +90,16 @@ local function run(msg, matches)
             end
     		if result then
 	            if msg.to.type == 'chat' then
-	                send_msg('chat#id'..msg.to.id, 'New link created', ok_cb, true)
+	                send_msg('chat#id'..msg.to.id, 'لینک جدید ساخته شد', ok_cb, true)
 	            elseif msg.to.type == 'channel' then
-	                send_msg('channel#id'..msg.to.id, 'New link created', ok_cb, true)
+	                send_msg('channel#id'..msg.to.id, 'لینک جدید ساخته شد', ok_cb, true)
 	            end
 	        end
             return
         else
             return '?? '..lang_text(msg.to.id, 'require_admin')
         end
-    elseif matches[1] == 'link' then
+    elseif matches[1] == 'لینک' then
         if permissions(msg.from.id, msg.to.id, "link") then
             hash = 'link:'..msg.to.id
             local linktext = redis:get(hash)
@@ -112,23 +112,23 @@ local function run(msg, matches)
                 return 'Link was sent in your pv'
             else
                 if msg.to.type == 'chat' then
-                    send_msg('chat#id'..msg.to.id, 'Error*\nplease send #newlink', ok_cb, true)
+                    send_msg('chat#id'..msg.to.id, '⚠️\nلطفا (لینک جدید) را ارسال کنید', ok_cb, true)
                 elseif msg.to.type == 'channel' then
-                    send_msg('channel#id'..msg.to.id, 'Error*\nplease send #newlink', ok_cb, true)
+                    send_msg('channel#id'..msg.to.id, '⚠️\nلطفا (لینک جدید) را ارسال کنید', ok_cb, true)
                 end
             end
             return
         end
-    elseif matches[1] == 'tosuper' then
+    elseif matches[1] == 'سوپرش کن' then
         if msg.to.type == 'chat' then
             if permissions(msg.from.id, msg.to.id, "tosupergroup") then
                 chat_upgrade('chat#id'..msg.to.id, ok_cb, false)
-                return 'Chat Upgraded Successfully.'
+                return "گپ با موفقیت ارتقا یافت💢☑️"
             end
         else
-            return 'Error !'
+            return 'این گپ قبلا به سوپر گپ تبدیل شده ☑️'
         end
-            elseif matches[1] == 'rmv' then
+            elseif matches[1] == 'اخراج' then
         if permissions(msg.from.id, msg.to.id, "kick") then
             local chat_id = msg.to.id
             local chat_type = msg.to.type
@@ -149,7 +149,7 @@ local function run(msg, matches)
                 end
             end
         end
-            elseif matches[1] == 'add' then
+            elseif matches[1] == 'اضافه کردن' then
         if permissions(msg.from.id, msg.to.id, "add") then
             local chat_id = msg.to.id
             local chat_type = msg.to.type
@@ -171,7 +171,7 @@ local function run(msg, matches)
               end
             end
     end
-    elseif matches[1] == 'setdes' then
+    elseif matches[1] == 'شرح' then
         if permissions(msg.from.id, msg.to.id, "description") then
             local text = matches[2]
             local chat = 'channel#id'..msg.to.id
@@ -184,15 +184,15 @@ end
 end
 return {
     patterns = {
-        '^#(setname) (.*)$',
-        '^#(link)$',
-        '^#(newlink)$',
-        '^#(tosuper)$',
-        '^#(setdes) (.*)$',
-        "^#(rmv)$",
-        "^#(rmv) (.*)$",
-        "^#(add)$",
-        "^#(add) (.*)$",
+        '^(تغییر نام) (.*)$',
+        '^(لینک)$',
+        '^(لینک جدید)$',
+        '^(سوپرش کن)$',
+        '^(شرح جدید) (.*)$',
+        "^(اخراج)$",
+        "^(اخراج) (.*)$",
+        "^(اضافه کردن)$",
+        "^(اضافه کردن) (.*)$",
     },
     run = run
 }
